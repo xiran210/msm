@@ -7,7 +7,7 @@
   
 - 配置文件获取与解析
     - [x] 配置文件解析(部分解析) 
-    - [ ] 远程获得配置文件
+    - [x] 远程获得配置文件
     - [ ] 定时请求更新配置文件
 
 - 通信协议
@@ -100,3 +100,15 @@ xiran_string xiran_str[xiran_string_count]={
 shell反连的地址需要在[配置文件](./配置文件设计.md)中配置
 
 测试使用的服务端为 `./server/kz/server.py`，请提取准备python3环境
+
+## 远程拉取配置文件测试
+
+若本地保存有配置文件，则优先使用同一目录下的`config.json`
+
+远程地址固定编码在可执行程序中，如需修改请修改源码之后重新编译
+
+测试使用的服务端为 `./server/test/filedownload/server.bat`，请提取准备python3环境
+
+测试使用的`config.json`在其子目录下
+
+测试使用的远程地址为`http://127.0.0.1:8080/testfile/config.json`

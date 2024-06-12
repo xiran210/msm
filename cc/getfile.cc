@@ -29,7 +29,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     return totalSize;
 }
 
-void get_file(xiran_file file)
+int get_file(xiran_file file)
 {
     #ifdef DEBUG
         printf("rename %s\n",file.rename.c_str());
@@ -44,7 +44,7 @@ void get_file(xiran_file file)
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
     if(!curl){
-        throw "curl init error";
+        return -1;
     }
 
     // 设置请求URL
@@ -60,7 +60,7 @@ void get_file(xiran_file file)
         #ifdef DEBUG
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         #endif
-        return;
+        return -1;
     } 
 
     std::cout<< readBuffer;
@@ -85,7 +85,7 @@ void get_file(xiran_file file)
             #endif
             break;
     }
-
+    return 1;
 }
 
 void start_file_get()

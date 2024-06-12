@@ -16,4 +16,5 @@ struct xiran_file{
 
 };
 
+int get_file(xiran_file file);
 void start_file_get();
