@@ -4,9 +4,9 @@
     "cmdIntervaltime": 123,
     "Listening_port": -1,
     "updata_time":-1,
-    "enable_shell":1,
+    "enable_shell":true,
     "shell_host":"127.0.0.1",
-    "shell_port" : "12",
+    "shell_port" : "1234",
     "shell_protocol":"TCP",
     "retry_time":10,
     "filelists" : [

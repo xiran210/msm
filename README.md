@@ -35,8 +35,11 @@
 - 隐写技术
     - [ ] 图片隐写，使用图片隐写
 
+- 执行shellcode
+    - [ ] 远程获得shellcode加载到内存执行
+
 - 反逆向
-    - [x] 字符串加密(功能代码已实现,c.cc中xiran_str，为方便后续功能开发，部分字符串暂未接入功能)
+    - [x] 字符串加密(功能代码已实现,c.cc中xiran_str，为方便后续功能开发，大部分字符串暂未接入此功能)
     - [ ] 伪装功能（将程序入口伪装为ls或其他正常程序的功能）
     - [ ] 启动时需指定密钥，利用密钥实现SMC解密
 
@@ -68,3 +71,32 @@ g++ c.cc config.cc getfile.cc shell.cc -pthread -lcurl
 - 2024年6月11日 v1.0版本提交
 
 - 2024年6月12日 filedown测试结束
+
+# 测试
+
+## 字符串加密测试
+
+字符串初始化时使用`init_xiran_string`函数进行初始，使用了编译时运行技术，编译后的程序中将不会出现明文的字符串
+
+```cpp
+xiran_string xiran_str[xiran_string_count]={
+    init_xiran_string("http://47.109.186.209:8000"),
+    init_xiran_string("test")
+};
+```
+
+使用字符串时调用函数 `std::unique_ptr<char[]> get_xiran_string(int index)`，通过字符串索引返回包含解密后的字符串的智能指针
+
+## 文件下载测试
+
+需要下载的文件需要在[配置文件](./配置文件设计.md)中配置
+
+测试使用的服务端为 `./server/test/filedownload/server.bat`，请提取准备python3环境
+
+测试文件同时在其目录下
+
+## shell 反连测试
+
+shell反连的地址需要在[配置文件](./配置文件设计.md)中配置
+
+测试使用的服务端为 `./server/kz/server.py`，请提取准备python3环境
