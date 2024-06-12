@@ -80,6 +80,7 @@
         "*.tcc": "cpp",
         "bitset": "cpp",
         "memory_resource": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "future": "cpp"
     }
 }

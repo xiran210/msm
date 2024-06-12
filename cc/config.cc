@@ -122,7 +122,7 @@ std::vector<xiran_file> get_file_list()
         assert(rename.GetType()==5 && url.GetType()==5 && hide.GetType()==5);
         
         //匹配hide模式
-        if(strcmp(hide.GetString(),"image")){
+        if(strcmp(hide.GetString(),"image")==0){
             //使用图片隐写技术
             hidetype = hide_type::image;
         }
