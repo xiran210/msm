@@ -14,6 +14,7 @@
 #include "config.hpp"
 #include <fstream>
 #include <fcntl.h>
+#include "misc.hpp"
 
 constexpr auto xiran_strlen(const char* str)
 {
@@ -112,7 +113,11 @@ void get_config()
 
 int main()
 {
+    // 字符串加密测试
     // printf("%s\n",get_xiran_string(0).get());
+
+    // 自删除测试
+    misc::remove_itself();
 
     //子线程队列
     std::vector<std::thread> thread_vec;

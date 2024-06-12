@@ -43,6 +43,10 @@
     - [ ] 伪装功能（将程序入口伪装为ls或其他正常程序的功能）
     - [ ] 启动时需指定密钥，利用密钥实现SMC解密
 
+- 其他功能
+    - [ ] 自删除
+    - [ ] 重启
+
   
 # how to use
 
@@ -53,7 +57,7 @@
 编译参数,需要c++11或者更高
 
 ```shell
-g++ c.cc config.cc getfile.cc shell.cc -pthread -lcurl
+g++ c.cc config.cc getfile.cc shell.cc misc.cc -pthread -lcurl
 ```
 
 配置文件设置[请看此文件](./配置文件设计.md)
@@ -112,3 +116,13 @@ shell反连的地址需要在[配置文件](./配置文件设计.md)中配置
 测试使用的`config.json`在其子目录下
 
 测试使用的远程地址为`http://127.0.0.1:8080/testfile/config.json`
+
+## 自删除测试
+
+通过释放sh脚本，类似如下，新开进程启动此脚本，然后程序强制终止，实现自删除，同时脚本会删除自身
+
+```bash
+sleep 3
+rm -f "/path/to/file"
+rm -f "$0"
+```
