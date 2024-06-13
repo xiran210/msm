@@ -2,6 +2,9 @@
 #include <curl/curl.h>
 #include <fstream>
 #include <iostream>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <limits.h>
 #define DEBUG
 
 void save_file(std::string path,std::string data)
@@ -13,6 +16,10 @@ void save_file(std::string path,std::string data)
 	outfile.open(path);
 	outfile << data;
 	outfile.close();
+
+    //给予文件权限 所有者可读可写可执行
+    chmod(path.c_str(), S_IRUSR | S_IWUSR | S_IXUSR);
+
 }
 
 size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {

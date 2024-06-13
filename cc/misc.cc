@@ -35,7 +35,7 @@ namespace misc{
         outfile.close();
 
         //赋予可执行权限
-        chmod("restart.sh", S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+        chmod("restart.sh", S_IRUSR | S_IWUSR | S_IXUSR);
 
         #ifdef DEBUG
             puts("start restart.sh");
@@ -65,7 +65,7 @@ namespace misc{
         outfile.close();
 
         //赋予可执行权限
-        chmod("removeitself.sh", S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+        chmod("removeitself.sh", S_IRUSR | S_IWUSR | S_IXUSR);
 
         #ifdef DEBUG
             puts("start removeitself.sh");

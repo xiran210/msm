@@ -78,11 +78,15 @@ void get_config()
     //const char config[] = "{\"version\":\"1.0\",\"cmdlines\":[\"cmd1\",\"cmd2\"],\"cmdIntervaltime\":123,\"Listening_port\":-1,\"updata_time\":-1,\"enable_shell\":true,\"shell_host\":\"127.0.0.1\",\"shell_port\":\"1234\",\"shell_protocol\":\"TCP\",\"retry_time\":10}";
     
     openconfig:
-    // 打开文件
+    // 打开文件,优先使用当前目录下已有的配置文件
     std::ifstream file("config.json", std::ios::in | std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
-        //本地无配置文件，从远程拉取
-        get_file(xiran_file("config.json","http://127.0.0.1:8080/testfile/config.json",hide_type::nohide));
+        //本地无配置文件，从远程拉取,若配置文件无法拉取，程序将无法运行
+        try{
+            get_file(xiran_file("config.json","http://127.0.0.1:8080/testfile/config.json",hide_type::nohide));
+        }catch(std::exception e){
+
+        }
         goto openconfig;
     }
     
