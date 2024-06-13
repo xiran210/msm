@@ -10,7 +10,7 @@
     - [x] 远程获得配置文件
     - [ ] 定时请求更新配置文件
 
-- 通信协议
+- 通信
     - [x] 无加密TCP
     - [ ] 固定密钥的对称加密TCP
     - [ ] TLS加密通信
@@ -74,11 +74,15 @@ g++ c.cc config.cc getfile.cc shell.cc misc.cc -pthread -lcurl
 
 - 2024年6月11日 v1.0版本提交
 
-- 2024年6月12日 filedown测试结束
+- 2024年6月12日 filedown测试结束，添加自删除功能
+
+- 2024年6月13日 可用性优化,为shell反代提供调用自删除与重启等功能的接口
 
 # 测试
 
 ## 字符串加密测试
+
+功能位于`c.cc`
 
 字符串初始化时使用`init_xiran_string`函数进行初始，使用了编译时运行技术，编译后的程序中将不会出现明文的字符串
 
@@ -93,6 +97,8 @@ xiran_string xiran_str[xiran_string_count]={
 
 ## 文件下载测试
 
+功能位于`getfile.cc`
+
 需要下载的文件需要在[配置文件](./配置文件设计.md)中配置
 
 测试使用的服务端为 `./server/test/filedownload/server.bat`，请提取准备python3环境
@@ -101,11 +107,15 @@ xiran_string xiran_str[xiran_string_count]={
 
 ## shell 反连测试
 
+功能位于`shell.cc`
+
 shell反连的地址需要在[配置文件](./配置文件设计.md)中配置
 
 测试使用的服务端为 `./server/kz/server.py`，请提取准备python3环境
 
 ## 远程拉取配置文件测试
+
+功能位于`c.cc`
 
 若本地保存有配置文件，则优先使用同一目录下的`config.json`
 
@@ -119,6 +129,8 @@ shell反连的地址需要在[配置文件](./配置文件设计.md)中配置
 
 ## 自删除测试
 
+功能位于`misc.cc`
+
 通过释放sh脚本，类似如下，新开进程启动此脚本，然后程序强制终止，实现自删除，同时脚本会删除自身
 
 ```bash
@@ -126,3 +138,8 @@ sleep 3
 rm -f "/path/to/file"
 rm -f "$0"
 ```
+
+## 自重启测试
+功能位于`misc.cc`
+
+原理与自删除一致

@@ -28,7 +28,24 @@ namespace misc{
 
     void restart_itself()
     {
-        
+        std::string sh = "sleep 3\n"+filename+"\"\nrm -f \"$0\"";
+        std::ofstream outfile;
+        outfile.open("restart.sh");
+        outfile << sh;
+        outfile.close();
+
+        //赋予可执行权限
+        chmod("restart.sh", S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+
+        #ifdef DEBUG
+            puts("start restart.sh");
+        #endif
+
+        //启动脚本
+        system("./restart.sh &");
+
+        //强制中止进程
+        std::terminate();
     }
 
     /*

